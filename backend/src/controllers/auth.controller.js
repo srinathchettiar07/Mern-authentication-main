@@ -60,9 +60,14 @@ export const requestVerification = async (req, res) => {
         const user = await User.findOne({ email });
         if (!user) return res.status(404).json({ message: "User not found" });
 
+        // if the account is already verified there's nothing to do
+        if (user.isVerified) {
+            return res.status(400).json({ message: "User is already verified" });
+        }
+
         const storedOtp = await token.findOne({ userId: user._id });
         if (!storedOtp) {
-            return res.status(404).json({ message: "OTP not found or already verified" });
+            return res.status(404).json({ message: "OTP not found or already used" });
         }
 
         if (otp !== storedOtp.token) {
@@ -71,14 +76,16 @@ export const requestVerification = async (req, res) => {
 
         const isExpired = new Date() - storedOtp.createdAt > 5 * 60 * 1000;
         if (isExpired) {
+            // throw away the old token but keep the user so they can request a new one
             await token.deleteOne({ userId: user._id });
             return res.status(400).json({ error: "OTP expired" });
         }
 
         const signupExpired = new Date() - storedOtp.createdAt > 24 * 60 * 60 * 1000;
         if (signupExpired) {
-            await User.deleteOne({ email });
-            return res.status(400).json({ error: "Signup request expired" });
+            // do not automatically delete a verified user; simply inform them
+            await token.deleteOne({ userId: user._id });
+            return res.status(400).json({ error: "Signup request expired. Please register again or request a new code." });
         }
 
         user.isVerified = true;
