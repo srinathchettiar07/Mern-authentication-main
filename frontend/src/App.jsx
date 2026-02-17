@@ -3,7 +3,8 @@ import Signup from './pages/Signup.jsx';
 import Verify from './pages/verify.jsx';
 import Login from './pages/login.jsx';
 import Home from './pages/home.jsx';
-import Dashboard from './pages/dashboard.jsx';
+import Dash from './pages/dashboard.jsx';
+import Dashboard from './owner/dashboard.jsx';
 import { useAuthStore } from './store/AuthStore.js';
 
 const App = () => {
@@ -15,6 +16,7 @@ const App = () => {
         <Route path="/signup" element={!authUser? <Signup/>:<Navigate to="/verify"/>}/>
         <Route path="/verify" element={<Verify />} />
         <Route path="/dashboard" element={authUser? <Dashboard />:<Navigate to="/login" />} />
+        <Route path="/dashboardx" element={authUser? <Dash />:<Navigate to="/login" />} />
       </Routes>
   );
 };

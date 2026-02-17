@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useAuthStore } from '../store/AuthStore.js'
 
-const Dashboard = () => {
+const Dash= () => {
   const { logout } = useAuthStore();
   const [showContent, setShowContent] = useState(false);
 
@@ -39,4 +39,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Dash;

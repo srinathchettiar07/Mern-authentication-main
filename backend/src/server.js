@@ -7,6 +7,8 @@ import cookieParser from "cookie-parser";
 import session from "express-session";
 import { connectMongoDB } from "./lib/Database/MongoDB.js";
 import {connectPgDB} from "./lib/Database/Postgres.js";
+import ownerRoutes from "./routes/owner.route.js";
+import { seedDatabase } from "./lib/seeder.js";
 config();
 const app = express();
 
@@ -20,10 +22,11 @@ app.use(cors({
 const port = process.env.PORT;
 
 app.use("/api/auth" , authRoutes) ;
+app.use("/api/owner" , ownerRoutes) ;
 
 app.listen(port , ()=>
 {
     console.log("Server running on localhost : "+port);
     connectMongoDB();
-    connectPgDB();
+    seedDatabase();
 })

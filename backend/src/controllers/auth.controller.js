@@ -74,24 +74,8 @@ export const requestVerification = async (req, res) => {
             return res.status(400).json({ message: "Invalid OTP, try again" });
         }
 
-        const isExpired = new Date() - storedOtp.createdAt > 5 * 60 * 1000;
-        if (isExpired) {
-            // throw away the old token but keep the user so they can request a new one
-            await token.deleteOne({ userId: user._id });
-            return res.status(400).json({ error: "OTP expired" });
-        }
-
-        const signupExpired = new Date() - storedOtp.createdAt > 24 * 60 * 60 * 1000;
-        if (signupExpired) {
-            // do not automatically delete a verified user; simply inform them
-            await token.deleteOne({ userId: user._id });
-            return res.status(400).json({ error: "Signup request expired. Please register again or request a new code." });
-        }
-
         user.isVerified = true;
         await user.save();
-
-        await token.deleteOne({ userId: user._id });
 
         generateToken(user._id, res);
 

@@ -34,7 +34,7 @@ export function sendMail(user, otp) {
   `;
   
   const mailOptions = {
-    from: `"EduPlatform" <bigtopgun26@gmail.com>`,
+    from: `"StockSync" <bigtopgun26@gmail.com>`,
     to: user.email,
     subject: "Email Verification OTP",
     html: htmlTemplate,
